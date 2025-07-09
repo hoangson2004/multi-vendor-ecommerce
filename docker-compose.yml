@@ -1,0 +1,146 @@
+
+version: '3.9'
+
+services:
+  auth-db:
+    image: postgres:15
+    container_name: auth-db
+    restart: always
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/auth_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5431:5432"
+
+  user-db:
+    image: postgres:15
+    container_name: user-db
+    restart: always
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/user_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+
+  shop-db:
+    image: postgres:15
+    container_name: shop-db
+    restart: always
+    environment:
+      POSTGRES_DB: shop_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/shop_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5434:5432"
+
+  product-db:
+    image: postgres:15
+    container_name: product-db
+    restart: always
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/product_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5435:5432"
+
+  cart-db:
+    image: postgres:15
+    container_name: cart-db
+    restart: always
+    environment:
+      POSTGRES_DB: cart_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/cart_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5436:5432"
+
+  order-db:
+    image: postgres:15
+    container_name: order-db
+    restart: always
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/order_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5437:5432"
+
+  payment-db:
+    image: postgres:15
+    container_name: payment-db
+    restart: always
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/payment_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5438:5432"
+
+  shipping-db:
+    image: postgres:15
+    container_name: shipping-db
+    restart: always
+    environment:
+      POSTGRES_DB: shipping_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/shipping_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5439:5432"
+
+  review-db:
+    image: postgres:15
+    container_name: review-db
+    restart: always
+    environment:
+      POSTGRES_DB: review_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/review_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5440:5432"
+
+  notification-db:
+    image: postgres:15
+    container_name: notification-db
+    restart: always
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/notification_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5441:5432"
+
+  promotion-db:
+    image: postgres:15
+    container_name: promotion-db
+    restart: always
+    environment:
+      POSTGRES_DB: promotion_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init/promotion_init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5442:5432"
