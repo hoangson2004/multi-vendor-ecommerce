@@ -10,24 +10,14 @@ import lombok.*;
 @Builder
 public class AuthResponse {
     private String accessToken;
+    private String refreshToken;
+
     private String tokenType = "Bearer";
-    private String userRef;
-    private String email;
-    private Role role;
 
-    public static AuthResponse fromEntity(User user, String token) {
-        return AuthResponse.builder()
-                .userRef(user.getUserRef())
-                .email(user.getEmail())
-                .accessToken(token)
-                .tokenType("Bearer")
-                .role(Role.fromCode(user.getRole()))
-                .build();
-    }
-
-    public static AuthResponse fromEntity(String token) {
+    public static AuthResponse fromEntity(String token, String refreshToken) {
         return AuthResponse.builder()
                 .accessToken(token)
+                .refreshToken(refreshToken)
                 .tokenType("Bearer")
                 .build();
     }

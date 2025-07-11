@@ -1,6 +1,5 @@
 package hust.hoangson.auth.service.impl;
 
-import hust.hoangson.auth.domain.constant.Constant;
 import hust.hoangson.auth.domain.enums.AuthProvider;
 import hust.hoangson.auth.domain.enums.Role;
 import hust.hoangson.auth.domain.entity.User;
@@ -9,21 +8,20 @@ import hust.hoangson.auth.request.LoginRequest;
 import hust.hoangson.auth.request.RegisterRequest;
 import hust.hoangson.auth.response.AuthResponse;
 import hust.hoangson.auth.service.AuthService;
+import hust.hoangson.auth.service.JwtService;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final JwtService jwtService;
 
     @Override
     public AuthResponse register(RegisterRequest req) {
@@ -42,7 +40,10 @@ public class AuthServiceImpl implements AuthService {
 
         user = userRepository.save(user);
 
-        return AuthResponse.fromEntity(user, "dummy-token");
+        String token = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        return AuthResponse.fromEntity(token, refreshToken);
     }
 
     @Override
@@ -56,6 +57,9 @@ public class AuthServiceImpl implements AuthService {
             return null;
         }
 
-        return AuthResponse.fromEntity("dummy-token");
+        String token = jwtService.generateAccessToken(user.get());
+        String refreshToken = jwtService.generateRefreshToken(user.get());
+
+        return AuthResponse.fromEntity(token, refreshToken);
     }
 }
