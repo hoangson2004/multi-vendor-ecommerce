@@ -15,5 +15,6 @@ CREATE TABLE IF NOT EXISTS auth_schema.refresh_tokens (
     user_id UUID,
     token TEXT,
     expires_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES auth_schema.users(id)
 );
