@@ -19,10 +19,16 @@ public class RefreshToken {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "token", nullable = false)
     private String token;
 
+    @Column(name = "client_ip")
+    private String clientIp;
+
+    @Column(name = "expried_at")
     private LocalDateTime expiresAt;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 }
 

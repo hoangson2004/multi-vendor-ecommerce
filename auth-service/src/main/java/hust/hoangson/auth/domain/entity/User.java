@@ -3,6 +3,7 @@ package hust.hoangson.auth.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -17,21 +18,33 @@ public class User {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "user_ref", nullable = false, unique = true)
     private String userRef;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false)
     private String role;
 
-    @Column(nullable = false)
+    @Column(name = "provider", nullable = false)
     private String provider;
+
+    @Column(name = "is_locked")
+    private Boolean isLocked;
+
+    @Column(name = "locked_reason")
+    private String lockedReason;
+
+    @Column(name = "locked_until")
+    private LocalDateTime lockedUntil;
+
+    @Column(name = "is_banned")
+    private Boolean isBanned;
 }
