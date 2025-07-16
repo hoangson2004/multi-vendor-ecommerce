@@ -1,4 +1,4 @@
-package hust.hoangson.userservice;
+package hust.hoangson.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
