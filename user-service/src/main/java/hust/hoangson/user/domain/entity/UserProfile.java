@@ -14,7 +14,7 @@ import java.util.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserProfile {
     @Id
     private UUID id;
 
@@ -37,7 +37,7 @@ public class User {
     private String avatarUrl;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isDeleted;
 
     @CreationTimestamp
     @Column(name = "create_at", updatable = false)
