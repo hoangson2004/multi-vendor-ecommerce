@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS user_schema.user_profiles (
     phone VARCHAR(20),
     full_name VARCHAR(100),
     avatar_url TEXT,
-    is_deleted BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS user_schema.user_addresses (
     district_code VARCHAR(10),
     province_code VARCHAR(10),
     is_default BOOLEAN DEFAULT FALSE,
-    is_deleted BOOLEAN,
+    is_active BOOLEAN,
     create_at TIMESTAMP DEFAULT now(),
     update_at TIMESTAMP DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES user_schema.user_profiles(user_id) ON DELETE CASCADE
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS user_schema.user_activity_logs (
     user_id VARCHAR(20) NOT NULL,
     action VARCHAR(100) NOT NULL,
     description TEXT,
-    ip_address VARCHAR(45),
+    ip_address VARCHAR(50),
     user_agent TEXT,
     create_at TIMESTAMP DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES user_schema.user_profiles(user_id) ON DELETE CASCADE
@@ -46,6 +46,6 @@ CREATE INDEX idx_user_logs_user_id ON user_schema.user_activity_logs(user_id);
 CREATE TABLE IF NOT EXISTS user_schema.user_roles (
     id UUID PRIMARY KEY,
     user_id VARCHAR(20) NOT NULL,
-    role VARCHAR(30) NOT NULL,
+    role VARCHAR(10) NOT NULL,
     assigned_at TIMESTAMP DEFAULT NOW()
 );

@@ -37,7 +37,7 @@ public class UserProfile {
     private String avatarUrl;
 
     @Column(name = "is_active")
-    private Boolean isDeleted;
+    private Boolean is_active;
 
     @CreationTimestamp
     @Column(name = "create_at", updatable = false)

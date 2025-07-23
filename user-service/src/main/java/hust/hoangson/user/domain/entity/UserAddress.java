@@ -20,7 +20,7 @@ public class UserAddress {
     private UUID id;
 
     @Column(name = "user_id", nullable = false)
-    private UUID userRef;
+    private UUID userId;
 
     @Column(name = "recipient_name", nullable = false)
     private String recipientName;
@@ -43,8 +43,8 @@ public class UserAddress {
     @Column(name = "is_default")
     private Boolean isDefault;
 
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     @CreationTimestamp
     @Column(name = "create_at", updatable = false)
