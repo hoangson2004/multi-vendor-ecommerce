@@ -1,4 +1,4 @@
-package hust.hoangson.userservice;
+package hust.hoangson.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
