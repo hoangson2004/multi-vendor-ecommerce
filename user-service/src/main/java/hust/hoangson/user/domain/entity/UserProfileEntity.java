@@ -3,19 +3,21 @@ package hust.hoangson.user.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user_profiles")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfile {
+public class UserProfileEntity {
     @Id
+    @Column(columnDefinition = "UUID")
     private UUID id;
 
     @Column(name = "user_id", unique = true,  nullable = false)
@@ -37,13 +39,19 @@ public class UserProfile {
     private String avatarUrl;
 
     @Column(name = "is_active")
-    private Boolean is_active;
+    private Boolean isActive;
+
+    @OneToMany(mappedBy = "userProfile")
+    private List<UserRoleEntity> roles;
+
+    @OneToMany(mappedBy = "userProfile")
+    private List<UserAddressEntity> addresses;
 
     @CreationTimestamp
-    @Column(name = "create_at", updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "update_at")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }

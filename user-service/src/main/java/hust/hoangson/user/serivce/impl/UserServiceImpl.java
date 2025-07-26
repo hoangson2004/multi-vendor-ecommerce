@@ -1,11 +1,15 @@
 package hust.hoangson.user.serivce.impl;
 
 import hust.hoangson.user.domain.dto.UserDTO;
+import hust.hoangson.user.domain.entity.UserProfileEntity;
 import hust.hoangson.user.repository.UserRepository;
 import hust.hoangson.user.request.SearchUserRequest;
 import hust.hoangson.user.response.UserResponse;
 import hust.hoangson.user.serivce.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +20,32 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<UserResponse> searchUsers(SearchUserRequest req) {
-        List<UserDTO> listUser = userRepository.getListUser(req.getUserId(), req.getUsername(), req.getEmail(), req.getPhone(), req.getFullname(), req.getRole());
-        return null;
+    public Page<UserResponse> searchUsers(SearchUserRequest req) {
+        PageRequest pageRequest = PageRequest.of(req.getPage(), req.getLimit());
+
+        String email = req.getEmail();
+        if (req.getEmail() != null && !req.getEmail().isEmpty()) {
+            email = email.toLowerCase().trim();
+        }
+
+        String fullname = req.getFullname();
+        if (req.getFullname() != null && !req.getFullname().isEmpty()) {
+            fullname = fullname.toLowerCase().trim();
+        }
+
+        String phone = req.getPhone();
+        if (req.getPhone() != null && !req.getPhone().isEmpty()) {
+            phone = phone.toLowerCase().trim();
+        }
+
+        Page<UserProfileEntity> pageUser = userRepository.getListUser(
+                req.getUserId(),
+                req.getUsername(),
+                email,
+                phone,
+                fullname,
+                req.getRole(),
+                pageRequest);
+        return pageUser.map(UserResponse::of);
     }
 }

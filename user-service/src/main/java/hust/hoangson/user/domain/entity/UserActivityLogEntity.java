@@ -3,6 +3,7 @@ package hust.hoangson.user.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,8 +14,9 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserActivityLog {
+public class UserActivityLogEntity {
     @Id
+    @Column(columnDefinition = "UUID")
     private UUID id;
 
     @Column(name = "user_id", nullable = false)
@@ -33,6 +35,6 @@ public class UserActivityLog {
     private String userAgent;
 
     @CreationTimestamp
-    @Column(name = "create_at", updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 }
