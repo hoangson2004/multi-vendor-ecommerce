@@ -1,5 +1,6 @@
 package hust.hoangson.user.serivce.impl;
 
+import hust.hoangson.common.kafka.event.user.UserCreatedEvent;
 import hust.hoangson.user.domain.dto.UserDTO;
 import hust.hoangson.user.domain.entity.UserProfileEntity;
 import hust.hoangson.user.repository.UserRepository;
@@ -47,5 +48,14 @@ public class UserServiceImpl implements UserService {
                 req.getRole(),
                 pageRequest);
         return pageUser.map(UserResponse::of);
+    }
+
+    public void createUserFromEvent(UserCreatedEvent event) {
+        UserProfileEntity user = new UserProfileEntity();
+        user.setUserId(event.getUserId());
+        user.setUsername(event.getUsername());
+        user.setEmail(event.getEmail());
+        user.setFullName(event.getFullname());
+        userRepository.save(user);
     }
 }

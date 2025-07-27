@@ -7,17 +7,20 @@ import hust.hoangson.auth.domain.entity.User;
 import hust.hoangson.auth.domain.repository.RefreshTokenRepository;
 import hust.hoangson.auth.domain.repository.UserRepository;
 import hust.hoangson.auth.exception.*;
+import hust.hoangson.auth.messaging.producer.UserEventPublisher;
 import hust.hoangson.auth.request.LoginRequest;
 import hust.hoangson.auth.request.RegisterRequest;
 import hust.hoangson.auth.response.AuthResponse;
 import hust.hoangson.auth.service.AuthService;
 import hust.hoangson.auth.service.JwtService;
+import hust.hoangson.common.kafka.event.user.UserCreatedEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.zip.CRC32;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenRepository  refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final UserEventPublisher userEventPublisher;
 
     @Override
     public AuthResponse register(RegisterRequest req) {
@@ -35,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = User.builder()
-                .userRef("USR" + System.currentTimeMillis())
+                .userId(generateUserId(req.getUsername()))
                 .username(req.getUsername())
                 .email(req.getEmail())
                 .password(passwordEncoder.encode(req.getPassword()))
@@ -48,6 +52,14 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
+        UserCreatedEvent event = UserCreatedEvent.builder()
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
+
+        userEventPublisher.publishUserCreated(event);
 
         return AuthResponse.fromEntity(token, refreshToken);
     }
@@ -85,5 +97,22 @@ public class AuthServiceImpl implements AuthService {
                 userRepository.save(user);
             }
         }
+    }
+
+    public static String generateUserId(String username) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+
+        String userPart = hashTo6Digits(username);
+
+        String timePart = hashTo6Digits(timestamp);
+
+        return "USR" + userPart + timePart;
+    }
+
+    private static String hashTo6Digits(String input) {
+        CRC32 crc = new CRC32();
+        crc.update(input.getBytes());
+        long hash = crc.getValue() % 1_000_000;
+        return String.format("%06d", hash);
     }
 }

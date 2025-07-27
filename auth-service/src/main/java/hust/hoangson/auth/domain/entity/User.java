@@ -18,8 +18,8 @@ public class User {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "user_ref", nullable = false, unique = true)
-    private String userRef;
+    @Column(name = "user_id", nullable = false, unique = true)
+    private String userId;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
