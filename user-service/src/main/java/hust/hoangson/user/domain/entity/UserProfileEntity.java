@@ -17,7 +17,9 @@ import java.util.*;
 @AllArgsConstructor
 public class UserProfileEntity {
     @Id
-    @Column(columnDefinition = "UUID")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false, columnDefinition = "UUID")
     private UUID id;
 
     @Column(name = "user_id", unique = true,  nullable = false)
@@ -38,7 +40,7 @@ public class UserProfileEntity {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "is_active")
+    @Column(name = "is_active", insertable = false)
     private Boolean isActive;
 
     @OneToMany(mappedBy = "userProfile")

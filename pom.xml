@@ -24,6 +24,7 @@
         <module>search-service</module>
         <module>shop-service</module>
         <module>user-service</module>
+        <module>common-kafka</module>
 
     </modules>
 

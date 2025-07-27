@@ -2,7 +2,7 @@ CREATE SCHEMA IF NOT EXISTS auth_schema;
 
 CREATE TABLE IF NOT EXISTS auth_schema.users (
     id UUID PRIMARY KEY,
-    user_ref VARCHAR(50) UNIQUE NOT NULL,
+    user_id VARCHAR(50) UNIQUE NOT NULL,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password TEXT NOT NULL,
