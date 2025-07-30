@@ -32,6 +32,7 @@ public class UserResponse {
         res.avatarUrl = dto.getAvatarUrl();
         res.createdAt = dto.getCreatedAt();
         res.updatedAt = dto.getUpdatedAt();
+        res.provinceCode = dto.getAddresses().get(0).getProvinceCode();
         return res;
     }
 }

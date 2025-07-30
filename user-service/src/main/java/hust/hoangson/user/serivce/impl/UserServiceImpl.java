@@ -5,6 +5,8 @@ import hust.hoangson.user.domain.dto.UserDTO;
 import hust.hoangson.user.domain.entity.UserProfileEntity;
 import hust.hoangson.user.repository.UserRepository;
 import hust.hoangson.user.request.SearchUserRequest;
+import hust.hoangson.user.request.UpdateUserProfileRequest;
+import hust.hoangson.user.response.UserDetailResponse;
 import hust.hoangson.user.response.UserResponse;
 import hust.hoangson.user.serivce.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +31,9 @@ public class UserServiceImpl implements UserService {
             email = email.toLowerCase().trim();
         }
 
-        String fullname = req.getFullname();
-        if (req.getFullname() != null && !req.getFullname().isEmpty()) {
-            fullname = fullname.toLowerCase().trim();
+        String fullName = req.getFullName();
+        if (req.getFullName() != null && !req.getFullName().isEmpty()) {
+            fullName = fullName.toLowerCase().trim();
         }
 
         String phone = req.getPhone();
@@ -44,7 +46,7 @@ public class UserServiceImpl implements UserService {
                 req.getUsername(),
                 email,
                 phone,
-                fullname,
+                fullName,
                 req.getRole(),
                 pageRequest);
         return pageUser.map(UserResponse::of);
@@ -58,4 +60,28 @@ public class UserServiceImpl implements UserService {
         user.setFullName(event.getFullname());
         userRepository.save(user);
     }
+
+    public UserDetailResponse getUserDetail(String userId) {
+        UserProfileEntity user = userRepository.findByUserId(userId).get();
+        return UserDetailResponse.of(user);
+    }
+
+    public UserDetailResponse updateUserProfile(UpdateUserProfileRequest req, String userId) {
+        UserProfileEntity user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null || !validateUserProfile(req.getEmail(), req.getPhone())) {
+            return null;
+        }
+        if (req.getFullName() != null) user.setFullName(req.getFullName());
+        if (req.getEmail() != null) user.setEmail(req.getEmail());
+        if (req.getPhone() != null) user.setPhone(req.getPhone());
+        if (req.getAvatarUrl() != null) user.setAvatarUrl(req.getAvatarUrl());
+
+        userRepository.save(user);
+        return UserDetailResponse.of(user);
+    }
+
+    public boolean validateUserProfile(String email, String phone) {
+        return !userRepository.existsByEmail(email) && !userRepository.existsByPhone(phone);
+    }
+
 }

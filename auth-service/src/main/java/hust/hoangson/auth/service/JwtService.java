@@ -35,12 +35,14 @@ public class JwtService {
     private String generateToken(User user, long expiryTime) {
         return Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim("id", user.getId())
+                .claim("user_id", user.getUserId())
+                .claim("username", user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiryTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
     public Integer extractUserId(String token) {
         return extractClaim(token, claims -> claims.get("id", Number.class).intValue());
     }

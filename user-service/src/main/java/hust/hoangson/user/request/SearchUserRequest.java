@@ -11,7 +11,7 @@ public class SearchUserRequest {
     private String username;
     private String email;
     private String phone;
-    private String fullname;
+    private String fullName;
     private String role;
     @Min(value = 0)
     private int page = 0;
