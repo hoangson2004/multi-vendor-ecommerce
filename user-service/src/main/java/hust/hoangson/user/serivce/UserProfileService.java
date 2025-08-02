@@ -7,9 +7,7 @@ import hust.hoangson.user.response.UserDetailResponse;
 import hust.hoangson.user.response.UserResponse;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
-public interface UserService {
+public interface UserProfileService {
     Page<UserResponse> searchUsers(SearchUserRequest req);
     void createUserFromEvent(UserCreatedEvent event);
     UserDetailResponse getUserDetail(String userId);

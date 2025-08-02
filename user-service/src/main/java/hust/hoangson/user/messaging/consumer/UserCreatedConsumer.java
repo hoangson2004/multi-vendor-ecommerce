@@ -1,7 +1,7 @@
 package hust.hoangson.user.messaging.consumer;
 
 import hust.hoangson.common.kafka.event.user.UserCreatedEvent;
-import hust.hoangson.user.serivce.UserService;
+import hust.hoangson.user.serivce.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserCreatedConsumer {
-    private final UserService userService;
+    private final UserProfileService userProfileService;
 
     @KafkaListener(topics = "user-created", groupId = "user-service-group")
     public void consume(UserCreatedEvent event) {
         log.info("📥 Received UserCreatedEvent: {}", event);
 
-        userService.createUserFromEvent(event);
+        userProfileService.createUserFromEvent(event);
     }
 }

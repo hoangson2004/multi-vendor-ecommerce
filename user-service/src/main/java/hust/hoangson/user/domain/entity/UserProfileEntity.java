@@ -3,7 +3,6 @@ package hust.hoangson.user.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -17,9 +16,8 @@ import java.util.*;
 @AllArgsConstructor
 public class UserProfileEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", updatable = false, nullable = false, columnDefinition = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "user_id", unique = true,  nullable = false)
@@ -40,13 +38,14 @@ public class UserProfileEntity {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "is_active", insertable = false)
+    @Column(name = "is_active")
     private Boolean isActive;
 
     @OneToMany(mappedBy = "userProfile")
     private List<UserRoleEntity> roles;
 
-    @OneToMany(mappedBy = "userProfile")
+    @OneToMany
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private List<UserAddressEntity> addresses;
 
     @CreationTimestamp

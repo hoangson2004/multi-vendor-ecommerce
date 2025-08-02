@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserProfileEntity, UUID> {
+public interface UserProfileRepository extends JpaRepository<UserProfileEntity, UUID> {
     @Query("SELECT DISTINCT u FROM UserProfileEntity u " +
             "LEFT JOIN u.roles r " +
             "LEFT JOIN u.addresses ad " +

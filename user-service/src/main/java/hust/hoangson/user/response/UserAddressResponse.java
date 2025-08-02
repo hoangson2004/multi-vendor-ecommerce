@@ -1,5 +1,6 @@
 package hust.hoangson.user.response;
 
+import hust.hoangson.user.domain.entity.UserAddressEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,4 +25,20 @@ public class UserAddressResponse {
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public static UserAddressResponse of(UserAddressEntity addr) {
+        UserAddressResponse res = new UserAddressResponse();
+
+        res.setId(addr.getId());
+        res.setRecipientName(addr.getRecipientName());
+        res.setPhone(addr.getPhone());
+        res.setAddressLine(addr.getAddressLine());
+        res.setProvinceCode(addr.getProvinceCode());
+        res.setIsDefault(addr.getIsDefault());
+        res.setIsActive(addr.getIsActive());
+        res.setCreatedAt(addr.getCreatedAt());
+        res.setUpdatedAt(addr.getUpdatedAt());
+        return res;
+    }
+
 }

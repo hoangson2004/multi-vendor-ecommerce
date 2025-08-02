@@ -3,11 +3,9 @@ package hust.hoangson.user.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,14 +15,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserAddressEntity {
-
     @Id
-    @Column(columnDefinition = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private UserProfileEntity userProfile;
+    @Column(name = "user_id", nullable = false)
+    private String userId;
 
     @Column(name = "recipient_name", nullable = false)
     private String recipientName;
@@ -49,6 +46,7 @@ public class UserAddressEntity {
 
     @Column(name = "is_active")
     private Boolean isActive;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

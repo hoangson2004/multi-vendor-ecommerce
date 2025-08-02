@@ -1,26 +1,22 @@
 package hust.hoangson.user.serivce.impl;
 
 import hust.hoangson.common.kafka.event.user.UserCreatedEvent;
-import hust.hoangson.user.domain.dto.UserDTO;
 import hust.hoangson.user.domain.entity.UserProfileEntity;
-import hust.hoangson.user.repository.UserRepository;
+import hust.hoangson.user.repository.UserProfileRepository;
 import hust.hoangson.user.request.SearchUserRequest;
 import hust.hoangson.user.request.UpdateUserProfileRequest;
 import hust.hoangson.user.response.UserDetailResponse;
 import hust.hoangson.user.response.UserResponse;
-import hust.hoangson.user.serivce.UserService;
+import hust.hoangson.user.serivce.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+public class UserProfileServiceImpl implements UserProfileService {
+    private final UserProfileRepository userProfileRepository;
 
     @Override
     public Page<UserResponse> searchUsers(SearchUserRequest req) {
@@ -41,7 +37,7 @@ public class UserServiceImpl implements UserService {
             phone = phone.toLowerCase().trim();
         }
 
-        Page<UserProfileEntity> pageUser = userRepository.getListUser(
+        Page<UserProfileEntity> pageUser = userProfileRepository.getListUser(
                 req.getUserId(),
                 req.getUsername(),
                 email,
@@ -58,16 +54,16 @@ public class UserServiceImpl implements UserService {
         user.setUsername(event.getUsername());
         user.setEmail(event.getEmail());
         user.setFullName(event.getFullname());
-        userRepository.save(user);
+        userProfileRepository.save(user);
     }
 
     public UserDetailResponse getUserDetail(String userId) {
-        UserProfileEntity user = userRepository.findByUserId(userId).get();
+        UserProfileEntity user = userProfileRepository.findByUserId(userId).get();
         return UserDetailResponse.of(user);
     }
 
     public UserDetailResponse updateUserProfile(UpdateUserProfileRequest req, String userId) {
-        UserProfileEntity user = userRepository.findByUserId(userId).orElse(null);
+        UserProfileEntity user = userProfileRepository.findByUserId(userId).orElse(null);
         if (user == null || !validateUserProfile(req.getEmail(), req.getPhone())) {
             return null;
         }
@@ -76,12 +72,12 @@ public class UserServiceImpl implements UserService {
         if (req.getPhone() != null) user.setPhone(req.getPhone());
         if (req.getAvatarUrl() != null) user.setAvatarUrl(req.getAvatarUrl());
 
-        userRepository.save(user);
+        userProfileRepository.save(user);
         return UserDetailResponse.of(user);
     }
 
     public boolean validateUserProfile(String email, String phone) {
-        return !userRepository.existsByEmail(email) && !userRepository.existsByPhone(phone);
+        return !userProfileRepository.existsByEmail(email) && !userProfileRepository.existsByPhone(phone);
     }
 
 }
