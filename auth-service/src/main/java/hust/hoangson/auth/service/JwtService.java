@@ -1,6 +1,6 @@
 package hust.hoangson.auth.service;
 
-import hust.hoangson.auth.domain.entity.User;
+import hust.hoangson.auth.domain.entity.UserEntity;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,19 +24,19 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String generateAccessToken(User user) {
-        return generateToken(user, expiration);
+    public String generateAccessToken(UserEntity userEntity) {
+        return generateToken(userEntity, expiration);
     }
 
-    public String generateRefreshToken(User user) {
-        return generateToken(user, refreshExpiration);
+    public String generateRefreshToken(UserEntity userEntity) {
+        return generateToken(userEntity, refreshExpiration);
     }
 
-    private String generateToken(User user, long expiryTime) {
+    private String generateToken(UserEntity userEntity, long expiryTime) {
         return Jwts.builder()
-                .setSubject(user.getUsername())
-                .claim("user_id", user.getUserId())
-                .claim("username", user.getUsername())
+                .setSubject(userEntity.getUsername())
+                .claim("user_id", userEntity.getUserId())
+                .claim("username", userEntity.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiryTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

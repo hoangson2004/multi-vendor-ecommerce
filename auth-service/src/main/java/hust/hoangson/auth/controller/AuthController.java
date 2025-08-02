@@ -1,7 +1,6 @@
 package hust.hoangson.auth.controller;
 
-import com.sun.security.auth.UserPrincipal;
-import hust.hoangson.auth.domain.repository.UserRepository;
+import hust.hoangson.auth.repository.UserRepository;
 import hust.hoangson.auth.request.LoginRequest;
 import hust.hoangson.auth.request.RegisterRequest;
 import hust.hoangson.auth.response.BaseResponse;
@@ -10,9 +9,6 @@ import hust.hoangson.auth.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor

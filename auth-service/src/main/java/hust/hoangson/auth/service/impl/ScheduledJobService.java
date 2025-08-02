@@ -1,6 +1,6 @@
 package hust.hoangson.auth.service.impl;
 
-import hust.hoangson.auth.domain.repository.RefreshTokenRepository;
+import hust.hoangson.auth.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
