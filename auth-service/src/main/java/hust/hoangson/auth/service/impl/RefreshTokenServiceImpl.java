@@ -1,15 +1,12 @@
 package hust.hoangson.auth.service.impl;
 
-import hust.hoangson.auth.domain.entity.RefreshToken;
-import hust.hoangson.auth.domain.entity.User;
-import hust.hoangson.auth.domain.repository.RefreshTokenRepository;
-import hust.hoangson.auth.domain.repository.UserRepository;
+import hust.hoangson.auth.domain.entity.UserEntity;
+import hust.hoangson.auth.repository.RefreshTokenRepository;
+import hust.hoangson.auth.repository.UserRepository;
 import hust.hoangson.auth.response.AuthResponse;
 import hust.hoangson.auth.service.JwtService;
 import hust.hoangson.auth.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -29,7 +26,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             return null;
         }
 
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<UserEntity> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
             return null;
         }
@@ -39,7 +36,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public void deleteToken(User user) {
+    public void deleteToken(UserEntity user) {
         refreshTokenRepository.deleteByUser(user);
     }
 

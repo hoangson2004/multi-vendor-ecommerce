@@ -1,7 +1,5 @@
 package hust.hoangson.auth.response;
 
-import hust.hoangson.auth.domain.entity.User;
-import hust.hoangson.auth.domain.enums.Role;
 import lombok.*;
 
 @Data

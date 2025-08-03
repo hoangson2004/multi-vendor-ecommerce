@@ -1,9 +1,6 @@
 package hust.hoangson.apigateway.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter implements WebFilter {
@@ -46,8 +43,18 @@ public class JwtAuthenticationFilter implements WebFilter {
                     .build()
                     .parseClaimsJws(token);
 
-            String username = claims.getBody().getSubject();
-            exchange.getRequest().mutate().header("X-User", username).build();
+            Claims body = claims.getBody();
+            String userId = body.get("user_id", String.class);
+            String username = body.get("username", String.class);
+            List<String> roles = body.get("roles", List.class);
+
+            exchange = exchange.mutate()
+                    .request(exchange.getRequest().mutate()
+                            .header("X-User-Id", userId)
+                            .header("X-Username", username)
+                            .header("X-Roles", String.join(",", roles != null ? roles : List.of()))
+                            .build())
+                    .build();
 
         } catch (JwtException | IllegalArgumentException e) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);

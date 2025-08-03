@@ -1,11 +1,10 @@
 package hust.hoangson.auth.service.impl;
 
-import hust.hoangson.auth.domain.constant.AccountError;
+import hust.hoangson.auth.domain.entity.UserEntity;
 import hust.hoangson.auth.domain.enums.AuthProvider;
 import hust.hoangson.auth.domain.enums.Role;
-import hust.hoangson.auth.domain.entity.User;
-import hust.hoangson.auth.domain.repository.RefreshTokenRepository;
-import hust.hoangson.auth.domain.repository.UserRepository;
+import hust.hoangson.auth.repository.RefreshTokenRepository;
+import hust.hoangson.auth.repository.UserRepository;
 import hust.hoangson.auth.exception.*;
 import hust.hoangson.auth.messaging.producer.UserEventPublisher;
 import hust.hoangson.auth.request.LoginRequest;
@@ -17,6 +16,7 @@ import hust.hoangson.common.kafka.event.user.UserCreatedEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExistsException();
         }
 
-        User user = User.builder()
+        UserEntity user = UserEntity.builder()
                 .userId(generateUserId(req.getUsername()))
                 .username(req.getUsername())
                 .email(req.getEmail())
@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(LoginRequest req) {
-        Optional<User> user = userRepository.findByEmail(req.getEmail());
+        Optional<UserEntity> user = userRepository.findByEmail(req.getEmail());
         if (!user.isPresent()) {
             throw new UserNotFoundException();
         }
@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.fromEntity(token, refreshToken);
     }
 
-    private void validateLoginAccount(User user) {
+    private void validateLoginAccount(UserEntity user) {
         if (Boolean.TRUE.equals(user.getIsBanned())) {
             throw new AccountBannedException();
         }
@@ -114,5 +114,10 @@ public class AuthServiceImpl implements AuthService {
         crc.update(input.getBytes());
         long hash = crc.getValue() % 1_000_000;
         return String.format("%06d", hash);
+    }
+
+    @Transactional
+    public int deleteUser(String userId) {
+        return userRepository.deleteUserByUserId(userId);
     }
 }
