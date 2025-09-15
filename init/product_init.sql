@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS product_schema.product_catalog (
     description TEXT,
     brand VARCHAR(255),
     attributes_json JSONB,
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
