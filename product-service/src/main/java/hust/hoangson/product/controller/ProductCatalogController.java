@@ -8,6 +8,9 @@ import hust.hoangson.product.service.ProductCatalogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,7 +24,7 @@ public class ProductCatalogController {
         return ResponseEntity.ok(BaseResponse.success(catalogService.create(catalog)));
     }
 
-    @GetMapping
+    @PostMapping("/search")
     public ResponseEntity<?> searchCatalog(@RequestBody CatalogSearchRequest req) {
         return ResponseEntity.ok(BaseResponse.success(catalogService.search(req)));
     }
@@ -35,5 +38,24 @@ public class ProductCatalogController {
     public ResponseEntity<?> delete(@PathVariable String catalogId) {
         return ResponseEntity.ok(BaseResponse.success(
                 "Catalog deleted successfully:" + catalogService.deleteCatalog(catalogId)));
+    }
+
+
+    @PostMapping("/{catalogId}/images")
+    public ResponseEntity<?> uploadImage(
+            @PathVariable String catalogId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "isPrimary", defaultValue = "false") boolean isPrimary) {
+        return ResponseEntity.ok(BaseResponse.success(catalogService.uploadCatalogImage(catalogId, file, isPrimary)));
+    }
+
+    @GetMapping("/{catalogId}/images")
+    public ResponseEntity<?> getImages(@PathVariable String catalogId) {
+        return ResponseEntity.ok(BaseResponse.success(catalogService.getCatalogImages(catalogId)));
+    }
+
+    @DeleteMapping("/{catalogId}/images/{imageId}")
+    public ResponseEntity<?> deleteImage(@PathVariable String catalogId ,@PathVariable UUID imageId) {
+        return ResponseEntity.ok(BaseResponse.success(catalogService.deleteImage(catalogId, imageId)));
     }
 }
