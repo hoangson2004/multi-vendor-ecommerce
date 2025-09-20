@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface ProductCategoryRepository extends JpaRepository<ProductCategoryEntity, String> {
+public interface ProductCategoryRepository extends JpaRepository<ProductCategoryEntity, UUID> {
 
     Optional<ProductCategoryEntity> findByCategoryId(String categoryId);
 

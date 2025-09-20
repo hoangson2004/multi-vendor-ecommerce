@@ -42,11 +42,11 @@ CREATE TABLE IF NOT EXISTS product_schema.product_categories (
 CREATE TABLE IF NOT EXISTS product_schema.vendor_products (
     id UUID PRIMARY KEY,
     vendor_product_id VARCHAR(20) UNIQUE NOT NULL,
-    vendor_id UUID NOT NULL,
+    vendor_id VARCHAR(20) NOT NULL,
     catalog_uuid UUID NOT NULL REFERENCES product_schema.product_catalog(id) ON DELETE CASCADE,
     price DECIMAL(15,2) NOT NULL CHECK (price >= 0),
     stock_quantity INT NOT NULL CHECK (stock_quantity >= 0),
-    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    status INT NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

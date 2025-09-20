@@ -19,6 +19,7 @@ public class CatalogResponse {
         res.name = entity.getName();
         res.description = entity.getDescription();
         res.brand = entity.getBrand();
+        res.attributesJson = entity.getAttributesJson();
         return res;
     }
 }
