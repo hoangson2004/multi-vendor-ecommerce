@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS auth_schema.refresh_tokens (
     id UUID PRIMARY KEY,
     user_id UUID,
     token TEXT,
-    client_ip VARCHAR(50)
+    client_ip VARCHAR(50),
     expires_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES auth_schema.users(id)

@@ -1,4 +1,3 @@
-
 version: '3.9'
 
 services:
@@ -11,7 +10,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/auth_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - auth-data:/var/lib/postgresql/data
+      - ./init/auth_init.sql:/docker-entrypoint-initdb.d/auth_init.sql
     ports:
       - "5431:5432"
 
@@ -24,7 +24,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/user_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - user-data:/var/lib/postgresql/data
+      - ./init/user_init.sql:/docker-entrypoint-initdb.d/user_init.sql
     ports:
       - "5433:5432"
 
@@ -37,7 +38,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/shop_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - shop-data:/var/lib/postgresql/data
+      - ./init/shop_init.sql:/docker-entrypoint-initdb.d/shop_init.sql
     ports:
       - "5434:5432"
 
@@ -50,7 +52,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/product_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - product-data:/var/lib/postgresql/data
+      - ./init/product_init.sql:/docker-entrypoint-initdb.d/product_init.sql
     ports:
       - "5435:5432"
 
@@ -63,7 +66,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/cart_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - cart-data:/var/lib/postgresql/data
+      - ./init/cart_init.sql:/docker-entrypoint-initdb.d/cart_init.sql
     ports:
       - "5436:5432"
 
@@ -76,7 +80,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/order_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - order-data:/var/lib/postgresql/data
+      - ./init/order_init.sql:/docker-entrypoint-initdb.d/order_init.sql
     ports:
       - "5437:5432"
 
@@ -89,7 +94,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/payment_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - payment-data:/var/lib/postgresql/data
+      - ./init/payment_init.sql:/docker-entrypoint-initdb.d/payment_init.sql
     ports:
       - "5438:5432"
 
@@ -102,7 +108,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/shipping_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - shipping-data:/var/lib/postgresql/data
+      - ./init/shipping_init.sql:/docker-entrypoint-initdb.d/shipping_init.sql
     ports:
       - "5439:5432"
 
@@ -115,7 +122,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/review_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - review-data:/var/lib/postgresql/data
+      - ./init/review_init.sql:/docker-entrypoint-initdb.d/review_init.sql
     ports:
       - "5440:5432"
 
@@ -128,7 +136,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/notification_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - notification-data:/var/lib/postgresql/data
+      - ./init/notification_init.sql:/docker-entrypoint-initdb.d/notification_init.sql
     ports:
       - "5441:5432"
 
@@ -141,7 +150,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./init/promotion_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - promotion-data:/var/lib/postgresql/data
+      - ./init/promotion_init.sql:/docker-entrypoint-initdb.d/promotion_init.sql
     ports:
       - "5442:5432"
 
@@ -169,3 +179,16 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
+
+volumes:
+  auth-data:
+  user-data:
+  shop-data:
+  product-data:
+  cart-data:
+  order-data:
+  payment-data:
+  shipping-data:
+  review-data:
+  notification-data:
+  promotion-data:
