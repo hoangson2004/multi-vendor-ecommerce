@@ -76,6 +76,16 @@ CREATE TABLE IF NOT EXISTS product_schema.product_variants (
 );
 CREATE INDEX IF NOT EXISTS idx_product_variants_vendor_product_uuid ON product_schema.product_variants(vendor_product_uuid);
 
+CREATE TABLE IF NOT EXISTS product_schema.variant_images (
+    image_id UUID PRIMARY KEY,
+    variant_uuid UUID NOT NULL REFERENCES product_schema.product_variants(id) ON DELETE CASCADE,
+    url VARCHAR(500) NOT NULL,
+    is_primary BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_variant_images_variant_uuid ON product_schema.variant_images(variant_uuid);
+
 CREATE TABLE product_schema.inventories (
     id UUID PRIMARY KEY,
     variant_uuid UUID NOT NULL REFERENCES product_schema.product_variants(id) ON DELETE CASCADE,

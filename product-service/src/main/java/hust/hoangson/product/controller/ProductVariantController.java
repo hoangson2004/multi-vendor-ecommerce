@@ -7,6 +7,8 @@ import hust.hoangson.product.service.ProductVariantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/product/variants")
@@ -39,5 +41,28 @@ public class ProductVariantController {
     @DeleteMapping("/{variantId}")
     public ResponseEntity<?> delete(@PathVariable String variantId) {
         return ResponseEntity.ok(BaseResponse.success(productVariantService.delete(variantId)));
+    }
+
+    @PostMapping("/{variantId}/images")
+    public ResponseEntity<?> uploadImage(
+            @PathVariable String variantId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "isPrimary", defaultValue = "false") boolean isPrimary
+    ) {
+        return ResponseEntity.ok(BaseResponse
+                .success(productVariantService.uploadVariantImage(variantId, file, isPrimary)));
+    }
+
+    @GetMapping("/{variantId}/images")
+    public ResponseEntity<?> getImages(@PathVariable String variantId) {
+        return ResponseEntity.ok(BaseResponse.success(productVariantService.getVariantImages(variantId)));
+    }
+
+    @DeleteMapping("/{variantId}/images/{imageId}")
+    public ResponseEntity<?> deleteImage(
+            @PathVariable String variantId,
+            @PathVariable UUID imageId
+    ) {
+        return ResponseEntity.ok(productVariantService.deleteImage(variantId, imageId));
     }
 }
