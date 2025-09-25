@@ -14,13 +14,10 @@
     <modules>
         <module>api-gateway</module>
         <module>auth-service</module>
-        <module>cart-service</module>
         <module>notification-service</module>
         <module>order-service</module>
         <module>payment-service</module>
         <module>product-service</module>
-        <module>promotion-service</module>
-        <module>review-service</module>
         <module>search-service</module>
         <module>shop-service</module>
         <module>user-service</module>
