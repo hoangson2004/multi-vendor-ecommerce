@@ -57,20 +57,6 @@ services:
     ports:
       - "5435:5432"
 
-  cart-db:
-    image: postgres:15
-    container_name: cart-db
-    restart: always
-    environment:
-      POSTGRES_DB: cart_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - cart-data:/var/lib/postgresql/data
-      - ./init/cart_init.sql:/docker-entrypoint-initdb.d/cart_init.sql
-    ports:
-      - "5436:5432"
-
   order-db:
     image: postgres:15
     container_name: order-db
