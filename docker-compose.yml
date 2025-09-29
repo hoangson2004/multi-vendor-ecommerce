@@ -85,34 +85,6 @@ services:
     ports:
       - "5438:5432"
 
-  shipping-db:
-    image: postgres:15
-    container_name: shipping-db
-    restart: always
-    environment:
-      POSTGRES_DB: shipping_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - shipping-data:/var/lib/postgresql/data
-      - ./init/shipping_init.sql:/docker-entrypoint-initdb.d/shipping_init.sql
-    ports:
-      - "5439:5432"
-
-  review-db:
-    image: postgres:15
-    container_name: review-db
-    restart: always
-    environment:
-      POSTGRES_DB: review_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - review-data:/var/lib/postgresql/data
-      - ./init/review_init.sql:/docker-entrypoint-initdb.d/review_init.sql
-    ports:
-      - "5440:5432"
-
   notification-db:
     image: postgres:15
     container_name: notification-db
@@ -126,20 +98,6 @@ services:
       - ./init/notification_init.sql:/docker-entrypoint-initdb.d/notification_init.sql
     ports:
       - "5441:5432"
-
-  promotion-db:
-    image: postgres:15
-    container_name: promotion-db
-    restart: always
-    environment:
-      POSTGRES_DB: promotion_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - promotion-data:/var/lib/postgresql/data
-      - ./init/promotion_init.sql:/docker-entrypoint-initdb.d/promotion_init.sql
-    ports:
-      - "5442:5432"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
