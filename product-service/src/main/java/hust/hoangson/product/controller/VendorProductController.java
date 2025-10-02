@@ -8,6 +8,9 @@ import hust.hoangson.product.service.VendorProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/product/vendor-products")
@@ -35,5 +38,28 @@ public class VendorProductController {
     @DeleteMapping("/{vendorProductId}")
     public ResponseEntity<?> delete(@PathVariable String vendorProductId) {
         return ResponseEntity.ok(BaseResponse.success(vendorProductService.delete(vendorProductId)));
+    }
+
+    @PostMapping("/{vendorProductId}/images")
+    public ResponseEntity<?> uploadImage(
+            @PathVariable String vendorProductId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "isPrimary", defaultValue = "false") boolean isPrimary
+    ) {
+        return ResponseEntity.ok(BaseResponse
+                .success(vendorProductService.uploadImage(vendorProductId, file, isPrimary)));
+    }
+
+    @GetMapping("/{vendorProductId}/images")
+    public ResponseEntity<?> getImages(@PathVariable String vendorProductId) {
+        return ResponseEntity.ok(BaseResponse.success(vendorProductService.getImages(vendorProductId)));
+    }
+
+    @DeleteMapping("/{vendorProductId}/images/{imageId}")
+    public ResponseEntity<?> deleteImage(
+            @PathVariable String vendorProductId,
+            @PathVariable UUID imageId
+    ) {
+        return ResponseEntity.ok(vendorProductService.deleteImage(vendorProductId, imageId));
     }
 }

@@ -8,6 +8,9 @@ import hust.hoangson.product.service.ProductCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/product/category")
@@ -33,5 +36,28 @@ public class ProductCategoryController {
     @PutMapping("/delete/{categoryId}")
     public ResponseEntity<?> deleteCategory(@PathVariable String categoryId){
         return ResponseEntity.ok(BaseResponse.success(productCategoryService.delete(categoryId)));
+    }
+
+    @PostMapping("/{categoryId}/images")
+    public ResponseEntity<?> uploadImage(
+            @PathVariable String categoryId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "isPrimary", defaultValue = "false") boolean isPrimary
+    ) {
+        return ResponseEntity.ok(BaseResponse
+                .success(productCategoryService.uploadImage(categoryId, file, isPrimary)));
+    }
+
+    @GetMapping("/{categoryId}/images")
+    public ResponseEntity<?> getImages(@PathVariable String categoryId) {
+        return ResponseEntity.ok(BaseResponse.success(productCategoryService.getImages(categoryId)));
+    }
+
+    @DeleteMapping("/{categoryId}/images/{imageId}")
+    public ResponseEntity<?> deleteImage(
+            @PathVariable String categoryId,
+            @PathVariable UUID imageId
+    ) {
+            return ResponseEntity.ok(productCategoryService.deleteImage(categoryId, imageId));
     }
 }

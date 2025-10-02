@@ -20,9 +20,9 @@ public interface ProductVariantService {
 
     List<ProductVariantResponse> getByVendorProduct(String vendorProductId);
 
-    ImageResponse uploadVariantImage(String variantId, MultipartFile file, boolean isPrimary);
+    ImageResponse uploadImage(String variantId, MultipartFile file, boolean isPrimary);
 
-    List<ImageResponse> getVariantImages(String variantId);
+    List<ImageResponse> getImages(String variantId);
 
     int deleteImage(String variantId, UUID imageId);
 }

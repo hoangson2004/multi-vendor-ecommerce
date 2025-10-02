@@ -16,10 +16,11 @@ public class VendorProductResponse {
     private BigDecimal price;
     private Integer stockQuantity;
     private int status;
+    private String url;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static VendorProductResponse of(VendorProductEntity entity) {
+    public static VendorProductResponse of(VendorProductEntity entity, String url) {
         VendorProductResponse res = new VendorProductResponse();
 
         ProductCatalogEntity catalog = entity.getProductCatalog();

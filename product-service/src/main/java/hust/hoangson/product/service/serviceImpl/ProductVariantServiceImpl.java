@@ -3,16 +3,18 @@ package hust.hoangson.product.service.serviceImpl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import hust.hoangson.product.domain.constant.Constant;
+import hust.hoangson.product.domain.entity.ProductImageEntity;
 import hust.hoangson.product.domain.entity.ProductVariantEntity;
-import hust.hoangson.product.domain.entity.VariantImageEntity;
 import hust.hoangson.product.domain.entity.VendorProductEntity;
+import hust.hoangson.product.domain.enums.OwnerType;
+import hust.hoangson.product.repository.ProductImageRepository;
 import hust.hoangson.product.repository.ProductVariantRepository;
-import hust.hoangson.product.repository.VariantImageRepository;
 import hust.hoangson.product.repository.VendorProductRepository;
 import hust.hoangson.product.request.ProductVariantCreateRequest;
 import hust.hoangson.product.request.ProductVariantUpdateRequest;
 import hust.hoangson.product.response.ImageResponse;
 import hust.hoangson.product.response.ProductVariantResponse;
+import hust.hoangson.product.service.ProductImageService;
 import hust.hoangson.product.service.ProductVariantService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +31,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
     private final ProductVariantRepository productVariantRepository;
     private final VendorProductRepository vendorProductRepository;
-    private final VariantImageRepository variantImageRepository;
-    private final Cloudinary cloudinary;
+    private final ProductImageService productImageService;
 
     @Override
     public ProductVariantResponse create(ProductVariantCreateRequest req) {
@@ -49,7 +50,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         entity.setStockQuantity(req.getStockQuantity());
 
         ProductVariantEntity saved = productVariantRepository.save(entity);
-        return ProductVariantResponse.of(saved);
+        return ProductVariantResponse.of(saved, null);
     }
 
     @Override
@@ -74,7 +75,9 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         }
 
         ProductVariantEntity updated = productVariantRepository.save(entity);
-        return ProductVariantResponse.of(updated);
+
+        String url = getPrimeImg(variantId);
+        return ProductVariantResponse.of(updated, url);
     }
 
     @Override
@@ -85,8 +88,9 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
     @Override
     public ProductVariantResponse getByVariantId(String variantId) {
+        String url = getPrimeImg(variantId);
         return productVariantRepository.findByVariantId(variantId)
-                .map(ProductVariantResponse::of)
+                .map(entity -> ProductVariantResponse.of(entity, url))
                 .orElse(null);
     }
 
@@ -94,47 +98,34 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     public List<ProductVariantResponse> getByVendorProduct(String vendorProductId) {
         return productVariantRepository.findByVendorProductId(vendorProductId)
                 .stream()
-                .map(ProductVariantResponse::of)
+                .map(entity -> {
+                    String url = getPrimeImg(vendorProductId);
+                    return ProductVariantResponse.of(entity, url);
+                })
                 .toList();
     }
 
     @Override
-    public ImageResponse uploadVariantImage(String variantId, MultipartFile file, boolean isPrimary) {
+    public ImageResponse uploadImage(String variantId, MultipartFile file, boolean isPrimary) {
         ProductVariantEntity variant = productVariantRepository.findByVariantId(variantId).orElse(null);
         if (variant == null) return null;
 
         UUID variantUuid = variant.getId();
-        try {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
-                    ObjectUtils.asMap(
-                            Constant.Cloudinary.FOLDER, Constant.Cloudinary.VARIANT + variantUuid
-                    ));
 
-            String url = (String) uploadResult.get(Constant.Cloudinary.SECURE_URL);
-
-            VariantImageEntity entity = new VariantImageEntity();
-            entity.setImageId(UUID.randomUUID());
-            entity.setVariantUuid(variantUuid);
-            entity.setUrl(url);
-            entity.setIsPrimary(isPrimary);
-
-            VariantImageEntity saved = variantImageRepository.save(entity);
-            return ImageResponse.of(saved);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Upload variant image failed", e);
-        }
+        return productImageService.uploadImage(variantUuid, variantId, file, isPrimary, OwnerType.VARIANT);
     }
 
     @Override
-    public List<ImageResponse> getVariantImages(String variantId) {
-        return variantImageRepository.findByVariantId(variantId).stream()
-                .map(ImageResponse::of)
-                .toList();
+    public List<ImageResponse> getImages(String variantId) {
+        return productImageService.getImages(variantId);
     }
 
     @Override
     public int deleteImage(String variantId, UUID imageId) {
-        return variantImageRepository.deleteImageById(imageId);
+        return productImageService.deleteImage(imageId);
+    }
+
+    public String getPrimeImg(String variantId) {
+        return productImageService.getPrimeImg(variantId);
     }
 }

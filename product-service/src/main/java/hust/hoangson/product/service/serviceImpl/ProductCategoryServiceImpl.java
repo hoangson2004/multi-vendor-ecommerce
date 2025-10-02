@@ -1,23 +1,39 @@
 package hust.hoangson.product.service.serviceImpl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import hust.hoangson.product.domain.constant.Constant;
+import hust.hoangson.product.domain.entity.ProductCatalogEntity;
 import hust.hoangson.product.domain.entity.ProductCategoryEntity;
+import hust.hoangson.product.domain.entity.ProductImageEntity;
+import hust.hoangson.product.domain.entity.ProductVariantEntity;
+import hust.hoangson.product.domain.enums.OwnerType;
 import hust.hoangson.product.repository.ProductCategoryRepository;
+import hust.hoangson.product.repository.ProductImageRepository;
 import hust.hoangson.product.request.CategoryCreateRequest;
 import hust.hoangson.product.request.CategorySearchRequest;
 import hust.hoangson.product.request.CategoryUpdateRequest;
 import hust.hoangson.product.response.CategoryResponse;
+import hust.hoangson.product.response.ImageResponse;
 import hust.hoangson.product.service.ProductCategoryService;
+import hust.hoangson.product.service.ProductImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     private final ProductCategoryRepository productCategoryRepository;
+    private final ProductImageService productImageService;
 
     @Override
     public CategoryResponse create(CategoryCreateRequest req) {
@@ -33,7 +49,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
         productCategoryRepository.save(entity);
 
-        return CategoryResponse.of(entity);
+        return CategoryResponse.of(entity, null);
     }
 
     @Override
@@ -46,7 +62,11 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 req.getSlug() != null ? req.getSlug() : "",
                 pageable
         );
-        return listCategory.map(CategoryResponse::of);
+
+        return listCategory.map(entity -> {
+            String url = getPrimeImg(entity.getCategoryId());
+            return CategoryResponse.of(entity, url);
+            });
     }
 
     @Override
@@ -67,7 +87,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
 
         productCategoryRepository.save(entity);
-        return CategoryResponse.of(entity);
+
+        String url = getPrimeImg(entity.getCategoryId());
+
+        return CategoryResponse.of(entity, url);
     }
 
     @Override
@@ -78,5 +101,29 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             return 0;
         }
         return productCategoryRepository.softDeleteByCategoryId(categoryId);
+    }
+
+    @Override
+    public ImageResponse uploadImage(String categoryId, MultipartFile file, boolean isPrimary) {
+        ProductCategoryEntity category = productCategoryRepository.findByCategoryId(categoryId).orElse(null);
+        if (category == null) return null;
+
+        UUID categoryUuid = category.getId();
+
+        return productImageService.uploadImage(categoryUuid, categoryId, file, isPrimary, OwnerType.CATEGORY);
+    }
+
+    @Override
+    public List<ImageResponse> getImages(String categoryId) {
+        return productImageService.getImages(categoryId);
+    }
+
+    @Override
+    public int deleteImage(String categoryId, UUID imageId) {
+        return productImageService.deleteImage(imageId);
+    }
+
+    public String getPrimeImg(String categoryId) {
+        return productImageService.getPrimeImg(categoryId);
     }
 }

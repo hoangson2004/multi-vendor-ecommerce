@@ -1,3 +1,4 @@
+DROP SCHEMA product_schema CASCADE;
 CREATE SCHEMA IF NOT EXISTS product_schema;
 
 CREATE TABLE IF NOT EXISTS product_schema.product_catalog (
@@ -11,15 +12,6 @@ CREATE TABLE IF NOT EXISTS product_schema.product_catalog (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TABLE IF NOT EXISTS product_schema.product_images (
-    image_id UUID PRIMARY KEY,
-    catalog_uuid UUID NOT NULL REFERENCES product_schema.product_catalog(id) ON DELETE CASCADE,
-    url VARCHAR(500) NOT NULL,
-    is_primary BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX IF NOT EXISTS idx_product_images_catalog_uuid ON product_schema.product_images(catalog_uuid);
 
 CREATE TABLE IF NOT EXISTS product_schema.categories (
     id UUID PRIMARY KEY,
@@ -76,16 +68,6 @@ CREATE TABLE IF NOT EXISTS product_schema.product_variants (
 );
 CREATE INDEX IF NOT EXISTS idx_product_variants_vendor_product_uuid ON product_schema.product_variants(vendor_product_uuid);
 
-CREATE TABLE IF NOT EXISTS product_schema.variant_images (
-    image_id UUID PRIMARY KEY,
-    variant_uuid UUID NOT NULL REFERENCES product_schema.product_variants(id) ON DELETE CASCADE,
-    url VARCHAR(500) NOT NULL,
-    is_primary BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX IF NOT EXISTS idx_variant_images_variant_uuid ON product_schema.variant_images(variant_uuid);
-
 CREATE TABLE product_schema.inventories (
     id UUID PRIMARY KEY,
     variant_uuid UUID NOT NULL REFERENCES product_schema.product_variants(id) ON DELETE CASCADE,
@@ -95,24 +77,89 @@ CREATE TABLE product_schema.inventories (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS product_schema.product_images (
+    image_id UUID PRIMARY KEY,
+    owner_id VARCHAR(20) NOT NULL,
+    owner_type VARCHAR(20) NOT NULL,
+    url VARCHAR(500) NOT NULL,
+    is_primary BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-INSERT INTO product_schema.product_catalog (id, catalog_id, name, description, brand, attributes_json) SELECT gen_random_uuid(), 'CAT-' || gs, 'Product ' || gs, 'Description for product ' || gs, 'Brand ' || (gs % 5 + 1), '{"color": "red", "size": "M"}'::jsonb FROM generate_series(1,50) gs ON CONFLICT (catalog_id) DO NOTHING;
-INSERT INTO product_schema.categories (id, category_id, parent_id, name, slug, description) SELECT gen_random_uuid(), 'CATG-' || gs, NULL, 'Category ' || gs, 'category-' || gs, 'Description for category ' || gs FROM generate_series(1,50) gs ON CONFLICT (slug) DO NOTHING;
-INSERT INTO product_schema.product_categories (catalog_uuid, category_uuid) SELECT (SELECT id FROM product_schema.product_catalog ORDER BY random() LIMIT 1), (SELECT id FROM product_schema.categories ORDER BY random() LIMIT 1) FROM generate_series(1,50) gs ON CONFLICT DO NOTHING;
-INSERT INTO product_schema.product_images (image_id, catalog_uuid, url, is_primary) SELECT gen_random_uuid(), (SELECT id FROM product_schema.product_catalog ORDER BY random() LIMIT 1), 'https://example.com/product_img_' || gs || '.jpg', (gs % 5 = 0) FROM generate_series(1,50) gs ON CONFLICT DO NOTHING;
-INSERT INTO product_schema.vendor_products (id, vendor_product_id, vendor_id, catalog_uuid, price, stock_quantity, status) SELECT gen_random_uuid(), 'VPROD-' || gs, gen_random_uuid(), (SELECT id FROM product_schema.product_catalog ORDER BY random() LIMIT 1), (random() * 100)::numeric(10,2), (random() * 100)::int, 'ACTIVE' FROM generate_series(1,50) gs ON CONFLICT (vendor_product_id) DO NOTHING;
-INSERT INTO product_schema.vendor_product_images (image_id, vendor_product_uuid, url, is_primary) SELECT gen_random_uuid(), (SELECT id FROM product_schema.vendor_products ORDER BY random() LIMIT 1), 'https://example.com/vendor_product_img_' || gs || '.jpg', (gs % 5 = 0) FROM generate_series(1,50) gs ON CONFLICT DO NOTHING;
-INSERT INTO product_schema.product_variants (id, variant_id, vendor_product_uuid, sku, attributes_json, price, stock_quantity) SELECT gen_random_uuid(), 'VAR-' || gs, (SELECT id FROM product_schema.vendor_products ORDER BY random() LIMIT 1), 'SKU-' || gs, '{"color": "blue", "size": "L"}'::jsonb, (random() * 120)::numeric(10,2), (random() * 200)::int FROM generate_series(1,50) gs ON CONFLICT (variant_id) DO NOTHING;
-INSERT INTO product_schema.inventories (
-    id, variant_uuid, stock_quantity, reserved_quantity, sold_quantity, updated_at
-)
-SELECT
-    gen_random_uuid(),
-    pv.id,
-    (random() * 200)::int,
-    0,
-    0,
-    now()
+CREATE INDEX IF NOT EXISTS idx_product_images_ownerid ON product_schema.product_images(owner_id);
+CREATE INDEX IF NOT EXISTS idx_product_images_owner ON product_schema.product_images(owner_id, owner_type);
+
+-- Catalog
+INSERT INTO product_schema.product_catalog (id, catalog_id, name, description, brand, attributes_json)
+SELECT gen_random_uuid(), 'CAT-' || gs, 'Product ' || gs, 'Description ' || gs, 'Brand ' || (gs % 5 + 1), '{"color": "red", "size": "M"}'::jsonb
+FROM generate_series(1,20) gs
+ON CONFLICT (catalog_id) DO NOTHING;
+
+-- Category
+INSERT INTO product_schema.categories (id, category_id, parent_id, name, slug, description)
+SELECT gen_random_uuid(), 'CATG-' || gs, NULL, 'Category ' || gs, 'category-' || gs, 'Description ' || gs
+FROM generate_series(1,10) gs
+ON CONFLICT (slug) DO NOTHING;
+
+-- Product-Category mapping
+INSERT INTO product_schema.product_categories (catalog_uuid, category_uuid)
+SELECT (SELECT id FROM product_schema.product_catalog ORDER BY random() LIMIT 1),
+       (SELECT id FROM product_schema.categories ORDER BY random() LIMIT 1)
+FROM generate_series(1,20) gs
+ON CONFLICT DO NOTHING;
+
+INSERT INTO product_schema.vendor_products (id, vendor_product_id, vendor_id, catalog_uuid, price, stock_quantity, status)
+SELECT gen_random_uuid(), 'VPROD-' || gs, 'VENDOR-' || gs, (SELECT id FROM product_schema.product_catalog ORDER BY random() LIMIT 1),
+       (random() * 100)::numeric(10,2), (random() * 100)::int, 1
+FROM generate_series(1,20) gs
+ON CONFLICT (vendor_product_id) DO NOTHING;
+
+INSERT INTO product_schema.product_variants (id, variant_id, vendor_product_uuid, sku, attributes_json, price, stock_quantity)
+SELECT gen_random_uuid(), 'VAR-' || gs, (SELECT id FROM product_schema.vendor_products ORDER BY random() LIMIT 1),
+       'SKU-' || gs, '{"color": "blue", "size": "L"}'::jsonb,
+       (random() * 120)::numeric(10,2), (random() * 200)::int
+FROM generate_series(1,30) gs
+ON CONFLICT (variant_id) DO NOTHING;
+
+INSERT INTO product_schema.inventories (id, variant_uuid, stock_quantity, reserved_quantity, sold_quantity, updated_at)
+SELECT gen_random_uuid(), pv.id, (random() * 200)::int, 0, 0, now()
 FROM product_schema.product_variants pv
 ORDER BY random()
-LIMIT 50;
+LIMIT 30;
+
+-- catalog
+INSERT INTO product_schema.product_images (image_id, owner_id, owner_type, url, is_primary)
+SELECT gen_random_uuid(),
+       (SELECT catalog_id FROM product_schema.product_catalog ORDER BY random() LIMIT 1), -- VARCHAR(20)
+       'CATALOG',
+       'https://example.com/catalog_' || gs || '.jpg',
+       (gs % 5 = 0)
+FROM generate_series(1,10) gs;
+
+-- vendor_product
+INSERT INTO product_schema.product_images (image_id, owner_id, owner_type, url, is_primary)
+SELECT gen_random_uuid(),
+       (SELECT vendor_product_id FROM product_schema.vendor_products ORDER BY random() LIMIT 1), -- VARCHAR(20)
+       'VENDOR_PRODUCT',
+       'https://example.com/vendor_product_' || gs || '.jpg',
+       (gs % 5 = 0)
+FROM generate_series(1,10) gs;
+
+-- variant
+INSERT INTO product_schema.product_images (image_id, owner_id, owner_type, url, is_primary)
+SELECT gen_random_uuid(),
+       (SELECT variant_id FROM product_schema.product_variants ORDER BY random() LIMIT 1), -- VARCHAR(20)
+       'VARIANT',
+       'https://example.com/variant_' || gs || '.jpg',
+       (gs % 5 = 0)
+FROM generate_series(1,10) gs;
+
+-- category
+INSERT INTO product_schema.product_images (image_id, owner_id, owner_type, url, is_primary)
+SELECT gen_random_uuid(),
+       (SELECT category_id FROM product_schema.categories ORDER BY random() LIMIT 1), -- VARCHAR(20)
+       'CATEGORY',
+       'https://example.com/category_' || gs || '.jpg',
+       (gs % 5 = 0)
+FROM generate_series(1,10) gs;
+

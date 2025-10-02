@@ -20,9 +20,9 @@ public interface ProductCatalogService {
 
     int deleteCatalog(String catalogId);
 
-    ImageResponse uploadCatalogImage(String CatalogId, MultipartFile file, boolean isPrimary);
+    ImageResponse uploadImage(String catalogId, MultipartFile file, boolean isPrimary);
 
-    List<ImageResponse> getCatalogImages(String catalogId);
+    List<ImageResponse> getImages(String catalogId);
 
     int deleteImage(String catalogId, UUID imageId);
 }
