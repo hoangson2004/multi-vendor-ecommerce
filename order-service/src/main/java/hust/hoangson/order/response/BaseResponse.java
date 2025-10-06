@@ -28,4 +28,9 @@ public class BaseResponse<T> {
                 .message(message)
                 .build();
     }
+
+    public boolean isSuccess() {
+        return this.code == 0;
+    }
+
 }
