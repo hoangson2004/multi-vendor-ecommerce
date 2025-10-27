@@ -1,4 +1,3 @@
-DROP SCHEMA product_schema CASCADE;
 CREATE SCHEMA IF NOT EXISTS product_schema;
 
 CREATE TABLE IF NOT EXISTS product_schema.product_catalog (

@@ -2,6 +2,8 @@ package hust.hoangson.order.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -15,25 +17,25 @@ public class CartItemEntity {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", nullable = false)
+    @JoinColumn(name = "cart_uuid", nullable = false)
     private CartEntity cart;
 
-    @Column(name = "product_id", nullable = false)
-    private String productId;
+    @Column(name = "vendor_product_id")
+    private String vendorProductId;
 
-    @Column(name = "product_name", nullable = false)
-    private String productName;
+    @Column(name = "vendor_product_name")
+    private String vendorProductName;
 
-    @Column(name = "product_url")
-    private String productUrl;
+    @Column(name = "vendor_product_url")
+    private String vendorProductUrl;
 
-    @Column(name = "variant_id")
+    @Column(name = "variant_id", nullable = false)
     private String variantId;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @Column(name = "price", nullable = false)
-    private Double price;
+    private BigDecimal price;
 }
 

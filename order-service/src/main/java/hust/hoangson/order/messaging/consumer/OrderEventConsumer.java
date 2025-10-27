@@ -14,29 +14,4 @@ public class OrderEventConsumer {
 
     private final CartService cartService;
 
-    @KafkaListener(topics = "product-variant-response", groupId = "order-service")
-    public void onVariantResponse(ProductVariantCheckResponseEvent event) {
-        try {
-            log.info("📥 Received CartItemAddResponseEvent: requestId={}, success={}", event.getRequestId(), event.isSuccess());
-
-            if (!event.isSuccess()) {
-                log.warn("Variant lookup failed for variantId={} reason={}", event.getVariantId(), event.getReason());
-                // optional: publish a failed event / notify user
-                return;
-            }
-
-            cartService.handleVariantResponse(
-                    event.getCartId(),
-                    event.getVariantId(),
-                    event.getProductId(),
-                    event.getProductName(),
-                    event.getProductUrl(),
-                    event.getPrice()
-            );
-
-            log.info("✅ Cart item saved for cartId={} variantId={}", event.getCartId(), event.getVariantId());
-        } catch (Exception ex) {
-            log.error("❌ Error processing CartItemAddResponseEvent requestId={}, cause={}", event.getRequestId(), ex.getMessage(), ex);
-        }
-    }
 }

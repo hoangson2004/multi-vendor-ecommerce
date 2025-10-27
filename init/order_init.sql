@@ -1,10 +1,8 @@
-DROP SCHEMA order_schema CASCADE;
-
 CREATE SCHEMA order_schema;
 
 CREATE TABLE IF NOT EXISTS order_schema.carts (
     id UUID PRIMARY KEY,
-    user_id UUID NOT NULL,
+    user_id VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -12,8 +10,9 @@ CREATE TABLE IF NOT EXISTS order_schema.cart_items (
     id UUID PRIMARY KEY,
     cart_uuid UUID NOT NULL REFERENCES order_schema.carts(id) ON DELETE CASCADE,
     variant_id VARCHAR(20) NOT NULL,
-    product_name VARCHAR(255) NOT NULL,
-    product_url VARCHAR(500) NOT NULL,
+    vendor_product_id VARCHAR(20),
+    vendor_product_name VARCHAR(255),
+    vendor_product_url VARCHAR(500),
     quantity INT NOT NULL,
     price DECIMAL(15,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

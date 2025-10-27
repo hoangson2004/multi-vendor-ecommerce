@@ -1,7 +1,7 @@
 package hust.hoangson.order.service.serviceImpl;
 
-import hust.hoangson.order.client.ProductClient;
-import hust.hoangson.order.domain.dto.ProductVariantDTO;
+import hust.hoangson.clients.dto.ProductVariantDTO;
+import hust.hoangson.clients.feign.ProductClient;
 import hust.hoangson.order.domain.entity.CartEntity;
 import hust.hoangson.order.domain.entity.CartItemEntity;
 import hust.hoangson.order.repository.CartRepository;
@@ -9,6 +9,7 @@ import hust.hoangson.order.request.AddToCartRequest;
 import hust.hoangson.order.response.BaseResponse;
 import hust.hoangson.order.response.CartResponse;
 import hust.hoangson.order.service.CartService;
+import hust.hoangson.order.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CartServiceImpl implements CartService {
 
+
     private final CartRepository cartRepository;
-    private final ProductClient productClient;
+    private final ProductService productService;
 
     @Override
     public CartResponse getCart(String userId) {
@@ -30,9 +32,10 @@ public class CartServiceImpl implements CartService {
                     newCart.setUserId(userId);
                     return cartRepository.save(newCart);
                 });
-        return cartMapper.toResponse(cart);
+        return CartResponse.of(cart);
     }
 
+    @Transactional
     @Override
     public CartResponse addToCart(String userId, AddToCartRequest request) {
         CartEntity cart = cartRepository.findByUserId(userId)
@@ -42,28 +45,20 @@ public class CartServiceImpl implements CartService {
                     return cartRepository.save(newCart);
                 });
 
-        BaseResponse<ProductVariantDTO> response =
-                productClient.getByVariantId(request.getVariantId());
-
-        if (response == null || !response.isSuccess() || response.getData() == null) {
-            throw new RuntimeException();
+        ProductVariantDTO variant = productService.getVariantById(request.getVariantId());
+        if (variant == null) {
+            throw new RuntimeException("Không thể lấy thông tin sản phẩm từ Product Service");
         }
-
-        ProductVariantDTO variant = response.getData();
 
         CartItemEntity item = new CartItemEntity();
         item.setCart(cart);
-        item.setProductId(variant.getProductId());
-        item.setProductName(variant.getProductName());
-        item.setProductUrl(variant.getProductUrl());
         item.setVariantId(request.getVariantId());
         item.setQuantity(request.getQuantity());
-        item.setPrice(variant.getPrice()); // snapshot giá tại thời điểm add
-
+        item.setPrice(variant.getPrice());
         cart.getItems().add(item);
-        cartRepository.save(cart);
 
-        return cartMapper.toResponse(cart);
+        cartRepository.save(cart);
+        return CartResponse.of(cart);
     }
 
     @Override
@@ -74,7 +69,7 @@ public class CartServiceImpl implements CartService {
         cart.getItems().removeIf(i -> i.getId().toString().equals(cartItemId));
         cartRepository.save(cart);
 
-        return cartMapper.toResponse(cart);
+        return CartResponse.of(cart);
     }
 
     @Override

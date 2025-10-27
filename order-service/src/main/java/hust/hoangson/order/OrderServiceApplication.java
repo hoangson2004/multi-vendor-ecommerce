@@ -8,9 +8,10 @@ import org.springframework.kafka.annotation.EnableKafka;
 @EnableKafka
 @SpringBootApplication(scanBasePackages = {
         "hust.hoangson.order",
-        "hust.hoangson.common.kafka"
+        "hust.hoangson.common.kafka",
+        "hust.hoangson.clients"
 })
-@EnableFeignClients
+@EnableFeignClients(basePackages = "hust.hoangson.clients")
 public class OrderServiceApplication {
 
 	public static void main(String[] args) {
