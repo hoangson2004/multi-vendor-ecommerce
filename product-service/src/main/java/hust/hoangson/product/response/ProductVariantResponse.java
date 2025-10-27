@@ -17,8 +17,9 @@ public class ProductVariantResponse {
     private BigDecimal price;
     private Integer stockQuantity;
     private String vendorProductId;
+    private String url;
 
-    public static ProductVariantResponse of(ProductVariantEntity entity) {
+    public static ProductVariantResponse of(ProductVariantEntity entity, String url) {
         return ProductVariantResponse.builder()
                 .variantId(entity.getVariantId())
                 .sku(entity.getSku())

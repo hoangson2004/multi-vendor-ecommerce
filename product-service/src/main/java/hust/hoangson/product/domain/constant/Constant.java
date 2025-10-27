@@ -7,6 +7,8 @@ public class Constant {
         public static final String API_SECRET = "api_secret";
         public static final String FOLDER = "folder";
         public static final String CATALOG = "catalog/";
+        public static final String CATEGORY = "category/";
+        public static final String V_PRODUCT = "v_product/";
         public static final String VARIANT = "variant/";
         public static final String SECURE_URL = "secure_url";
     }

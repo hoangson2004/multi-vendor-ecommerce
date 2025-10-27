@@ -46,12 +46,12 @@ public class ProductCatalogController {
             @PathVariable String catalogId,
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "isPrimary", defaultValue = "false") boolean isPrimary) {
-        return ResponseEntity.ok(BaseResponse.success(catalogService.uploadCatalogImage(catalogId, file, isPrimary)));
+        return ResponseEntity.ok(BaseResponse.success(catalogService.uploadImage(catalogId, file, isPrimary)));
     }
 
     @GetMapping("/{catalogId}/images")
     public ResponseEntity<?> getImages(@PathVariable String catalogId) {
-        return ResponseEntity.ok(BaseResponse.success(catalogService.getCatalogImages(catalogId)));
+        return ResponseEntity.ok(BaseResponse.success(catalogService.getImages(catalogId)));
     }
 
     @DeleteMapping("/{catalogId}/images/{imageId}")

@@ -1,11 +1,8 @@
 package hust.hoangson.product.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,21 +11,29 @@ import java.util.UUID;
 @Table(name = "product_images", schema = "product_schema")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductImageEntity {
 
     @Id
-    @Column(name = "image_id", nullable = false)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "image_id")
     private UUID imageId;
 
-    @Column(name = "catalog_uuid", nullable = false)
-    private UUID catalogUuid;
+    @Column(name = "owner_id", nullable = false)
+    private String ownerId;
 
-    @Column(name = "url", nullable = false, length = 500)
+    @Column(name = "owner_type", nullable = false)
+    private String ownerType;
+
+    @Column(name = "url", nullable = false)
     private String url;
 
     @Column(name = "is_primary")
     private Boolean isPrimary = false;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 }

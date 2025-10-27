@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -23,8 +24,13 @@ public class JwtAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
+        HttpMethod method = exchange.getRequest().getMethod();
 
         if (path.startsWith("/api/auth")) {
+            return chain.filter(exchange);
+        }
+
+        if (path.startsWith("/api/product") && HttpMethod.GET.equals(method)) {
             return chain.filter(exchange);
         }
 

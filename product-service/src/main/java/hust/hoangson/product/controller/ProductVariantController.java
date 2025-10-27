@@ -50,12 +50,12 @@ public class ProductVariantController {
             @RequestParam(value = "isPrimary", defaultValue = "false") boolean isPrimary
     ) {
         return ResponseEntity.ok(BaseResponse
-                .success(productVariantService.uploadVariantImage(variantId, file, isPrimary)));
+                .success(productVariantService.uploadImage(variantId, file, isPrimary)));
     }
 
     @GetMapping("/{variantId}/images")
     public ResponseEntity<?> getImages(@PathVariable String variantId) {
-        return ResponseEntity.ok(BaseResponse.success(productVariantService.getVariantImages(variantId)));
+        return ResponseEntity.ok(BaseResponse.success(productVariantService.getImages(variantId)));
     }
 
     @DeleteMapping("/{variantId}/images/{imageId}")
