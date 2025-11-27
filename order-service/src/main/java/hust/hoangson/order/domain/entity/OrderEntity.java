@@ -23,6 +23,9 @@ public class OrderEntity {
     @Column(name = "vendor_id")
     private String vendorId;
 
+    @Column(name = "order_code")
+    private String orderCode;
+
     @Column(name = "status", nullable = false)
     private Integer status = 0;
 
@@ -38,7 +41,7 @@ public class OrderEntity {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItemEntity> items = new ArrayList<>();
 }
 

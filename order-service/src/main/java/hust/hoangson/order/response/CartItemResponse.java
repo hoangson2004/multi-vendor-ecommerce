@@ -13,6 +13,7 @@ public class CartItemResponse {
     private String vendorProductName;
     private String vendorProductUrl;
     private String variantId;
+    private String vendorId;
     private Integer quantity;
     private BigDecimal price;
 
@@ -23,6 +24,7 @@ public class CartItemResponse {
         response.vendorProductName = entity.getVendorProductName();
         response.vendorProductUrl = entity.getVendorProductUrl();
         response.variantId = entity.getVariantId();
+        response.vendorId = entity.getVendorId();
         response.quantity = entity.getQuantity();
         response.price = entity.getPrice();
         return response;

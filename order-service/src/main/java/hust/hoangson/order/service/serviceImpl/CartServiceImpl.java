@@ -52,6 +52,10 @@ public class CartServiceImpl implements CartService {
 
         CartItemEntity item = new CartItemEntity();
         item.setCart(cart);
+        item.setVendorId(variant.getVendorId());
+        item.setVendorProductId(variant.getVendorProductId());
+        item.setVendorProductName(variant.getVendorProductName());
+        item.setVendorProductUrl(variant.getUrl());
         item.setVariantId(request.getVariantId());
         item.setQuantity(request.getQuantity());
         item.setPrice(variant.getPrice());

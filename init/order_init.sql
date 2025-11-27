@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS order_schema.cart_items (
     id UUID PRIMARY KEY,
     cart_uuid UUID NOT NULL REFERENCES order_schema.carts(id) ON DELETE CASCADE,
     variant_id VARCHAR(20) NOT NULL,
+    vendor_id VARCHAR(20) NOT NULL,
     vendor_product_id VARCHAR(20),
     vendor_product_name VARCHAR(255),
     vendor_product_url VARCHAR(500),

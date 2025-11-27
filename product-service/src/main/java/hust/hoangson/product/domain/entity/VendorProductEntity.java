@@ -25,6 +25,9 @@ public class VendorProductEntity {
     @Column(name = "vendor_id", nullable = false)
     private String vendorId;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "catalog_uuid", nullable = false)
     private ProductCatalogEntity productCatalog;

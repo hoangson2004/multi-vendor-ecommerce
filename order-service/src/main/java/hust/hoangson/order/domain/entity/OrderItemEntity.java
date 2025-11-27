@@ -16,11 +16,21 @@ public class OrderItemEntity {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(name = "order_uuid", nullable = false)
-    private String orderUuid;
+    @ManyToOne
+    @JoinColumn(name = "order_uuid")
+    private OrderEntity order;
 
     @Column(name = "variant_id", nullable = false)
-    private UUID variantId;
+    private String variantId;
+
+    @Column(name = "product_id", nullable = false)
+    private String productId;
+
+    @Column(name = "product_name", nullable = false)
+    private String productName;
+
+    @Column(name = "subtotal", nullable = false)
+    private BigDecimal subtotal;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

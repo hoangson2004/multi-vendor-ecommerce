@@ -1,6 +1,7 @@
 package hust.hoangson.order.messaging.producer;
 
 import hust.hoangson.common.kafka.config.KafkaTopics;
+import hust.hoangson.common.kafka.event.order.OrderCreatedEvent;
 import hust.hoangson.common.kafka.event.order.ProductVariantCheckRequestEvent;
 import hust.hoangson.common.kafka.producer.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,19 @@ public class OrderEventPublisher {
     private final KafkaProducerService kafkaProducerService;
 
     public void publishCartItemAddRequest(ProductVariantCheckRequestEvent event) {
-        kafkaProducerService.send(KafkaTopics.PRODUCT_VARIANT_CHECK_REQUEST, event.getVariantId(), event);
+        kafkaProducerService.send(
+                KafkaTopics.PRODUCT_VARIANT_CHECK_REQUEST,
+                event.getVariantId(),
+                event
+        );
+    }
+
+    public void publishOrderCreatedEvent(OrderCreatedEvent event) {
+        kafkaProducerService.send(
+                KafkaTopics.ORDER_CREATED,
+                event.getOrderId(),
+                event
+        );
     }
 
 }

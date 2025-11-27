@@ -76,6 +76,7 @@ public class VendorProductServiceImpl implements VendorProductService {
 
         entity.setVendorProductId("PROD-" + System.currentTimeMillis());
         entity.setVendorId(req.getVendorId());
+        entity.setName(req.getName() != null ? req.getName() : catalogEntity.getName());
         entity.setProductCatalog(catalogEntity);
         entity.setPrice(req.getPrice());
         entity.setStockQuantity(req.getStockQuantity());
