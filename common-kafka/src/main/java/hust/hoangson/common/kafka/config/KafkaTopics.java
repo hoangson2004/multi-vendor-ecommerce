@@ -5,5 +5,7 @@ public class KafkaTopics {
     public static final String USER_CREATE_FAILED = "user-create-failed";
     public static final String PRODUCT_VARIANT_CHECK_REQUEST = "product-variant-request";
     public static final String PRODUCT_VARIANT_CHECK_RESPONSE = "product-variant-response";
+    public static final String ORDER_CREATED = "order-created";
+
 
 }

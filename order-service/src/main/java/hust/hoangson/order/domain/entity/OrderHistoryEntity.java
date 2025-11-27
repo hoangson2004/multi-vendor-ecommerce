@@ -16,7 +16,7 @@ public class OrderHistoryEntity {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(name = "order_id", nullable = false)
+    @Column(name = "order_uuid", nullable = false)
     private UUID orderUuid;
 
     @Column(name = "status", nullable = false)

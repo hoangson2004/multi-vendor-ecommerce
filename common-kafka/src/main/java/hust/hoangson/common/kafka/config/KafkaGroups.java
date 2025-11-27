@@ -5,4 +5,6 @@ public class KafkaGroups {
     public static final String AUTH_SERVICE_GROUP = "auth-service-group";
     public static final String ORDER_SERVICE_GROUP = "order-service-group";
     public static final String PRODUCT_SERVICE_GROUP = "product-service-group";
+    public static final String NOTIFICATION_SERVICE_GROUP = "notification-service-group";
+    public static final String PAYMENT_SERVICE_GROUP = "payment-service-group";
 }

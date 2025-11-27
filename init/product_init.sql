@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS product_schema.vendor_products (
     id UUID PRIMARY KEY,
     vendor_product_id VARCHAR(20) UNIQUE NOT NULL,
     vendor_id VARCHAR(20) NOT NULL,
+    name VARCHAR(255),
     catalog_uuid UUID NOT NULL REFERENCES product_schema.product_catalog(id) ON DELETE CASCADE,
     price DECIMAL(15,2) NOT NULL CHECK (price >= 0),
     stock_quantity INT NOT NULL CHECK (stock_quantity >= 0),

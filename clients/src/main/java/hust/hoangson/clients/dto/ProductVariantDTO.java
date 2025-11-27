@@ -11,7 +11,9 @@ import java.util.Map;
 @AllArgsConstructor
 public class ProductVariantDTO {
     private String variantId;
+    private String vendorId;
     private String sku;
+    private String vendorProductName;
     private Map<String, Object> attributesJson;
     private BigDecimal price;
     private Integer stockQuantity;

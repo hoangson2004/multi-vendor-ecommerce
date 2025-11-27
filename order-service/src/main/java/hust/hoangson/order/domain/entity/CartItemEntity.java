@@ -32,6 +32,9 @@ public class CartItemEntity {
     @Column(name = "variant_id", nullable = false)
     private String variantId;
 
+    @Column(name = "vendor_id", nullable = false)
+    private String vendorId;
+
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
