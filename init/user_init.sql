@@ -1,5 +1,4 @@
 CREATE SCHEMA IF NOT EXISTS user_schema;
-CREATE EXTENSION IF NOT EXISTS unaccent;
 
 CREATE TABLE IF NOT EXISTS user_schema.user_profiles (
     id UUID PRIMARY KEY,
@@ -17,7 +16,7 @@ CREATE INDEX idx_user_profiles_user_id ON user_schema.user_profiles(user_id);
 
 CREATE TABLE IF NOT EXISTS user_schema.user_addresses (
     id UUID PRIMARY KEY,
-    user_id VARCHAR(20)NOT NULL,
+    user_id VARCHAR(20) NOT NULL,
     recipient_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     address_line TEXT NOT NULL,

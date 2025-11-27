@@ -1,103 +1,26 @@
 version: '3.9'
 
 services:
-  auth-db:
-    image: postgres:15
-    container_name: auth-db
+  postgres:
+    image: postgres:16
+    container_name: multi-schema-postgres
     restart: always
     environment:
-      POSTGRES_DB: auth_db
+      POSTGRES_DB: multi_vendor
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
     volumes:
-      - auth-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+
       - ./init/auth_init.sql:/docker-entrypoint-initdb.d/auth_init.sql
-    ports:
-      - "5431:5432"
-
-  user-db:
-    image: postgres:15
-    container_name: user-db
-    restart: always
-    environment:
-      POSTGRES_DB: user_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - user-data:/var/lib/postgresql/data
       - ./init/user_init.sql:/docker-entrypoint-initdb.d/user_init.sql
-    ports:
-      - "5433:5432"
-
-  shop-db:
-    image: postgres:15
-    container_name: shop-db
-    restart: always
-    environment:
-      POSTGRES_DB: shop_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - shop-data:/var/lib/postgresql/data
       - ./init/shop_init.sql:/docker-entrypoint-initdb.d/shop_init.sql
-    ports:
-      - "5434:5432"
-
-  product-db:
-    image: postgres:15
-    container_name: product-db
-    restart: always
-    environment:
-      POSTGRES_DB: product_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - product-data:/var/lib/postgresql/data
       - ./init/product_init.sql:/docker-entrypoint-initdb.d/product_init.sql
-    ports:
-      - "5435:5432"
-
-  order-db:
-    image: postgres:15
-    container_name: order-db
-    restart: always
-    environment:
-      POSTGRES_DB: order_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - order-data:/var/lib/postgresql/data
       - ./init/order_init.sql:/docker-entrypoint-initdb.d/order_init.sql
-    ports:
-      - "5437:5432"
-
-  payment-db:
-    image: postgres:15
-    container_name: payment-db
-    restart: always
-    environment:
-      POSTGRES_DB: payment_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - payment-data:/var/lib/postgresql/data
       - ./init/payment_init.sql:/docker-entrypoint-initdb.d/payment_init.sql
-    ports:
-      - "5438:5432"
-
-  notification-db:
-    image: postgres:15
-    container_name: notification-db
-    restart: always
-    environment:
-      POSTGRES_DB: notification_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - notification-data:/var/lib/postgresql/data
       - ./init/notification_init.sql:/docker-entrypoint-initdb.d/notification_init.sql
-    ports:
-      - "5441:5432"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -125,14 +48,4 @@ services:
       - zookeeper
 
 volumes:
-  auth-data:
-  user-data:
-  shop-data:
-  product-data:
-  cart-data:
-  order-data:
-  payment-data:
-  shipping-data:
-  review-data:
-  notification-data:
-  promotion-data:
+  postgres-data:
