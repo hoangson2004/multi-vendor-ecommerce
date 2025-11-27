@@ -7,5 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface OrderHistoryRepository extends JpaRepository<OrderHistoryEntity, UUID> {
-    List<OrderHistoryEntity> findByOrderUuid(UUID orderUuid);
+
+    List<OrderHistoryEntity> findByOrderUuidIn(List<UUID> orderIds);
 }

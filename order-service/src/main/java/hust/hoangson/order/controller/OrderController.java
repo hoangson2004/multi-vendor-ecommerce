@@ -1,5 +1,6 @@
 package hust.hoangson.order.controller;
 
+import hust.hoangson.order.request.OrderSearchRequest;
 import hust.hoangson.order.request.PlaceOrderRequest;
 import hust.hoangson.order.response.BaseResponse;
 import hust.hoangson.order.service.OrderService;
@@ -13,6 +14,16 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
+
+    @PostMapping("/search")
+    public ResponseEntity<?> searchOrders(
+            @RequestHeader("X-User-Id") String userId,
+            @RequestBody OrderSearchRequest request
+    ) {
+        return ResponseEntity.ok(
+                BaseResponse.success(orderService.searchOrders(userId, request))
+        );
+    }
 
     @PostMapping("/checkout")
     public ResponseEntity<?> placeOrder(

@@ -18,7 +18,12 @@ public interface ProductImageRepository extends JpaRepository<ProductImageEntity
 
     ProductImageEntity findByImageId(UUID imageId);
 
-    @Query("SELECT i.url FROM ProductImageEntity i WHERE i.ownerId = :ownerId AND i.isPrimary = true")
+    @Query(
+            value = "SELECT i.url FROM product_schema.product_images i " +
+                    "WHERE i.owner_id = :ownerId AND i.is_primary = true " +
+                    "ORDER BY i.created_at DESC LIMIT 1",
+            nativeQuery = true
+    )
     Optional<String> findPrimaryImageUrl(@Param("ownerId") String ownerId);
 
 

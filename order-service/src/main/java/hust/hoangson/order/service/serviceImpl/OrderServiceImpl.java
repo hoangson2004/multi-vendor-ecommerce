@@ -9,11 +9,17 @@ import hust.hoangson.order.repository.CartRepository;
 import hust.hoangson.order.repository.OrderHistoryRepository;
 import hust.hoangson.order.repository.OrderItemRepository;
 import hust.hoangson.order.repository.OrderRepository;
+import hust.hoangson.order.request.OrderSearchRequest;
 import hust.hoangson.order.request.PlaceOrderRequest;
+import hust.hoangson.order.response.OrderHistoryResponse;
 import hust.hoangson.order.response.OrderResponse;
 import hust.hoangson.order.service.OrderService;
 import hust.hoangson.order.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +38,56 @@ public class OrderServiceImpl implements OrderService {
     private final OrderHistoryRepository orderHistoryRepository;
     private final ProductService productService;
     private final OrderEventPublisher orderEventPublisher;
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderResponse> searchOrders(String userId, OrderSearchRequest request) {
+
+        Pageable pageable = PageRequest.of(
+                request.getPage(),
+                request.getLimit(),
+                Sort.by(Sort.Direction.valueOf(request.getSortDirection()), request.getSortBy())
+        );
+
+        Page<OrderEntity> pageOrders = orderRepository.searchOrders(
+                userId,
+                request.getStatus(),
+                request.getCreatedFrom(),
+                request.getCreatedTo(),
+                pageable
+        );
+
+
+        List<UUID> orderIds = pageOrders.getContent().stream()
+                .map(OrderEntity::getId)
+                .toList();
+
+        List<OrderHistoryEntity> histories = orderHistoryRepository.findByOrderUuidIn(orderIds);
+
+        Map<UUID, List<OrderHistoryResponse>> historyByOrderId = histories.stream()
+                .collect(
+                        java.util.stream.Collectors.groupingBy(
+                                OrderHistoryEntity::getOrderUuid,
+                                java.util.stream.Collectors.mapping(
+                                        OrderHistoryResponse::of,
+                                        java.util.stream.Collectors.toList()
+                                )
+                        )
+                );
+
+        historyByOrderId.values()
+                .forEach(list -> list.sort(
+                        java.util.Comparator.comparing(OrderHistoryResponse::getCreatedAt)
+                                .reversed()
+                ));
+
+        return pageOrders.map(order -> {
+            List<OrderHistoryResponse> historyList =
+                    historyByOrderId.getOrDefault(order.getId(), Collections.emptyList());
+            return OrderResponse.of(order, historyList);
+        });
+    }
+
 
     @Override
     public List<OrderResponse> placeOrder(String userId, PlaceOrderRequest request) {
@@ -77,8 +133,6 @@ public class OrderServiceImpl implements OrderService {
             order.setVendorId(vendorId);
             order.setStatus(OrderStatus.PENDING.getCode());
             order.setPaymentStatus(PaymentStatus.UNPAID.getCode());
-            order.setCreatedAt(LocalDateTime.now());
-            order.setUpdatedAt(LocalDateTime.now());
             order.setOrderCode(generateOrderCode());
 
             // Tạo order items
@@ -107,13 +161,12 @@ public class OrderServiceImpl implements OrderService {
             history.setOrderUuid(order.getId());
             history.setStatus(order.getStatus());
             history.setNote(request.getNote() != null ? request.getNote() : "Order created");
-            history.setCreatedAt(LocalDateTime.now());
 
             orderHistoryRepository.save(history);
 
             // (optional) publish Kafka OrderCreatedEvent
 
-            result.add(OrderResponse.of(order, orderItems));
+            result.add(OrderResponse.ofCreate(order, orderItems));
         }
 
         cart.getItems().clear();

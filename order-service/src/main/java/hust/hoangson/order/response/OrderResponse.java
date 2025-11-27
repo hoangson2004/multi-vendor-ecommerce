@@ -12,21 +12,30 @@ import java.util.List;
 public class OrderResponse {
     private String id;
     private String userId;
+    private String orderCode;
     private Integer status;
     private Integer paymentStatus;
     private BigDecimal totalAmount;
     private LocalDateTime createdAt;
     private List<OrderItemResponse> items;
+    private List<OrderHistoryResponse> orderHistories;
 
-    public static OrderResponse of(OrderEntity order, List<OrderItemEntity> items) {
+    public static OrderResponse ofCreate(OrderEntity order, List<OrderItemEntity> items) {
         OrderResponse r = new OrderResponse();
         r.id = order.getId().toString();
         r.userId = order.getUserId();
+        r.orderCode = order.getOrderCode();
         r.status = order.getStatus();
         r.paymentStatus = order.getPaymentStatus();
         r.totalAmount = order.getTotalAmount();
         r.createdAt = order.getCreatedAt();
         r.items = items.stream().map(OrderItemResponse::of).toList();
+        return r;
+    }
+
+    public static OrderResponse of(OrderEntity order, List<OrderHistoryResponse> orderHistories) {
+        OrderResponse r = ofCreate(order, order.getItems());
+        r.orderHistories = orderHistories;
         return r;
     }
 }
