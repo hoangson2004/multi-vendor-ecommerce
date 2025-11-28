@@ -1,0 +1,92 @@
+ecommerce:
+  client:
+    enabled: true
+    default-protocol: rest
+
+    defaults:
+      connect-timeout: 10s
+      read-timeout: 30s
+      write-timeout: 30s
+      max-retries: 3
+      enable-metrics: true
+      enable-tracing: true
+
+    service-discovery:
+      enabled: true
+      type: eureka
+      namespace: default
+      metadata:
+        version: v1
+        environment: dev
+
+    resilience:
+      circuit-breaker:
+        enabled: true
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 60s
+        sliding-window-size: 100
+        minimum-number-of-calls: 20
+        wait-duration-in-open-state: 60s
+
+      retry:
+        enabled: true
+        max-attempts: 3
+        wait-duration: 500ms
+        exponential-backoff: true
+        exponential-backoff-multiplier: 2.0
+        max-wait-duration: 5s
+
+      bulkhead:
+        enabled: false
+        max-concurrent-calls: 25
+        max-wait-duration: 0s
+
+      rate-limiter:
+        enabled: false
+        limit-for-period: 50
+        limit-refresh-period: 1s
+        timeout-duration: 5s
+
+    observability:
+      metrics-enabled: true
+      tracing-enabled: true
+      logging-enabled: true
+      metrics-prefix: ecommerce.client
+
+    services:
+      auth-service:
+        protocol: rest
+        service-id: auth-service
+        base-path: /api/auth
+        enabled: true
+        rest:
+          log-level: FULL
+          follow-redirects: true
+
+      user-service:
+        protocol: rest
+        service-id: user-service
+        base-path: /api/user
+        enabled: true
+        rest:
+          log-level: FULL
+          follow-redirects: true
+
+      product-service:
+        protocol: rest
+        service-id: product-service
+        base-path: /api/product
+        enabled: true
+        rest:
+          log-level: FULL
+          follow-redirects: true
+
+      order-service:
+        protocol: rest
+        service-id: order-service
+        base-path: /api/order
+        enabled: true
+        rest:
+          log-level: FULL
+          follow-redirects: true

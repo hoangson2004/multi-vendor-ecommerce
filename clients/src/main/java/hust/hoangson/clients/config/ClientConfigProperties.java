@@ -95,6 +95,7 @@ public class ClientConfigProperties {
 
     @Data
     public static class ServiceConfig {
+        private String serviceId;
         private String name;
         private String protocol = "rest";
         private String url;
