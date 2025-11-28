@@ -14,13 +14,14 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
-      - ./init/auth_init.sql:/docker-entrypoint-initdb.d/auth_init.sql
-      - ./init/user_init.sql:/docker-entrypoint-initdb.d/user_init.sql
-      - ./init/shop_init.sql:/docker-entrypoint-initdb.d/shop_init.sql
-      - ./init/product_init.sql:/docker-entrypoint-initdb.d/product_init.sql
-      - ./init/order_init.sql:/docker-entrypoint-initdb.d/order_init.sql
-      - ./init/payment_init.sql:/docker-entrypoint-initdb.d/payment_init.sql
-      - ./init/notification_init.sql:/docker-entrypoint-initdb.d/notification_init.sql
+      - ./init/user_init.sql:/docker-entrypoint-initdb.d/01_user_init.sql
+      - ./init/auth_init.sql:/docker-entrypoint-initdb.d/02_auth_init.sql
+      - ./init/shop_init.sql:/docker-entrypoint-initdb.d/03_shop_init.sql
+      - ./init/product_init.sql:/docker-entrypoint-initdb.d/04_product_init.sql
+      - ./init/order_init.sql:/docker-entrypoint-initdb.d/05_order_init.sql
+      - ./init/payment_init.sql:/docker-entrypoint-initdb.d/06_payment_init.sql
+      - ./init/notification_init.sql:/docker-entrypoint-initdb.d/07_notification_init.sql
+      - ./init/mockdata.sql:/docker-entrypoint-initdb.d/08_mockdata.sql
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
