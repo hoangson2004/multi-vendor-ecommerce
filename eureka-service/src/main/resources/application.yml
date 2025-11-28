@@ -1,0 +1,27 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: eureka-server
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true   # client dễ lookup hơn
+
+  client:
+    register-with-eureka: false   # Server thì KHÔNG register chính nó
+    fetch-registry: false         # Server không fetch registry
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # vẫn phải có cho server, tránh cảnh báo
+
+  server:
+    eviction-interval-timer-in-ms: 1000
+    enable-self-preservation: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -1,0 +1,40 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: product-service
+
+  profiles:
+    active: dev
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/multi_vendor
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    properties:
+      hibernate:
+        default_schema: product_schema
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: product-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+
+cloudinary:
+  cloud-name: drl8zhbtg
+  api-key: 153111163262254
+  api-secret: aqXmd3_6PtLbAK_Gsdu8q4pqM_Y
