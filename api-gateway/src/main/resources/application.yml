@@ -1,0 +1,86 @@
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/**
+
+            - id: cart-service
+              uri: lb://cart-service
+              predicates:
+                - Path=/api/users/**
+
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - Path=/api/notification/**
+
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/api/order/**
+
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/api/payment/**
+
+            - id: product-service
+              uri: lb://product-service
+              predicates:
+                - Path=/api/product/**
+
+            - id: promotion-service
+              uri: lb://promotion-service
+              predicates:
+                - Path=/api/promotion/**
+
+            - id: review-service
+              uri: lb://review-service
+              predicates:
+                - Path=/api/review/**
+
+            - id: search-service
+              uri: lb://search-service
+              predicates:
+                - Path=/api/search/**
+
+            - id: shop-service
+              uri: lb://shop-service
+              predicates:
+                - Path=/api/shop/**
+
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/user/**
+
+          globalcors:
+            cors-configurations:
+              "[/**]":
+                allowedOrigins: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                allowedHeaders: "*"
+
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8080
+
+jwt:
+  secret: "1234567890123456789012345678901221312564687415"
